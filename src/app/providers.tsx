@@ -7,7 +7,6 @@ import { Toaster } from "react-hot-toast";
 import { useUIStore } from "@/store/ui-store";
 import { usePeriodicSync } from "@/hooks/use-sync";
 import { supabase } from "@/services/supabase";
-import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/auth-store";
 
 function SyncManager({ children }: { children: React.ReactNode }) {
@@ -16,13 +15,13 @@ function SyncManager({ children }: { children: React.ReactNode }) {
 }
 
 function SessionHandler({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
 
   useEffect(() => {
-    const setup = searchParams.get("setup");
-    const accessToken = searchParams.get("access_token");
-    const refreshToken = searchParams.get("refresh_token");
+    const params = new URLSearchParams(window.location.search);
+    const setup = params.get("setup");
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
 
     if (setup === "true" && accessToken && refreshToken) {
       supabase.auth.setSession({
@@ -32,11 +31,10 @@ function SessionHandler({ children }: { children: React.ReactNode }) {
         if (error) {
           console.error("Session setup error:", error);
         }
-        // Clean URL params
         window.history.replaceState({}, "", "/");
       });
     }
-  }, [searchParams, setUser]);
+  }, [setUser]);
 
   return <>{children}</>;
 }
