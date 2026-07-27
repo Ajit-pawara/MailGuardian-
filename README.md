@@ -2,9 +2,9 @@
 
 **Personal Email Dashboard** — Monitor multiple Gmail accounts, classify important emails, and get instant notifications.
 
-![MailGuardian](public/icons/icon-512x512.png)
-
 ---
+
+
 
 ## Features
 
