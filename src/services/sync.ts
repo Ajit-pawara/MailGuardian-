@@ -101,9 +101,9 @@ async function upsertEmail(email: import("@/types/email").EmailMessage): Promise
       history_id: email.historyId,
       internal_date: new Date(parseInt(email.internalDate)).toISOString(),
       size_estimate: email.sizeEstimate,
-      from_name: email.from.name,
-      from_address: email.from.address,
-      to_addresses: email.to.map((t) => t.address),
+      from_name: email.from?.name || "",
+      from_address: email.from?.address || "",
+      to_addresses: email.to?.map((t) => t.address) || [],
       cc_addresses: (email.cc || []).map((c) => c.address),
       subject: email.subject,
       snippet: email.snippet,
@@ -128,7 +128,7 @@ async function upsertEmail(email: import("@/types/email").EmailMessage): Promise
   }
 
   // Insert attachments
-  if (email.attachments.length > 0) {
+  if (email.attachments && email.attachments.length > 0) {
     for (const att of email.attachments) {
       await getSupabaseAdmin().from("attachments").upsert(
         {

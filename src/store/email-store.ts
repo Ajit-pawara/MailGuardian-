@@ -105,19 +105,19 @@ export const useEmailStore = create<EmailState>()((set, get) => ({
       const q = state.searchQuery.toLowerCase();
       filtered = filtered.filter(
         (e) =>
-          e.subject.toLowerCase().includes(q) ||
-          e.from.name.toLowerCase().includes(q) ||
-          e.from.address.toLowerCase().includes(q) ||
-          e.snippet.toLowerCase().includes(q)
+          (e.subject || "").toLowerCase().includes(q) ||
+          (e.from?.name || "").toLowerCase().includes(q) ||
+          (e.from?.address || "").toLowerCase().includes(q) ||
+          (e.snippet || "").toLowerCase().includes(q)
       );
     }
 
     filtered.sort((a, b) => {
       const mul = state.sortOrder === "asc" ? 1 : -1;
-      if (state.sortField === "date") return mul * (new Date(b.date).getTime() - new Date(a.date).getTime());
+      if (state.sortField === "date") return mul * (new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
       if (state.sortField === "priority") return mul * ((b as any).priority_score || 0) - ((a as any).priority_score || 0);
-      if (state.sortField === "from") return mul * a.from.name.localeCompare(b.from.name);
-      if (state.sortField === "subject") return mul * a.subject.localeCompare(b.subject);
+      if (state.sortField === "from") return mul * (a.from?.name || "").localeCompare(b.from?.name || "");
+      if (state.sortField === "subject") return mul * (a.subject || "").localeCompare(b.subject || "");
       return 0;
     });
 

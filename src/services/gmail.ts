@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import type { EmailMessage, EmailListParams, EmailListResponse, EmailLabel, EmailAttachment } from "@/types/email";
 import { parseEmailPayload, decodeBase64 } from "@/utils/email-helpers";
+import type { EmailPayload } from "@/types/email";
 
 const gmail = google.gmail("v1");
 
@@ -38,7 +39,7 @@ export async function fetchEmails(
         format: "full",
       });
 
-      const payload = detail.data.payload;
+      const payload = detail.data.payload as EmailPayload;
       const parsed = parseEmailPayload(payload, accountId, accountEmail);
 
       const email: EmailMessage = {
@@ -84,7 +85,7 @@ export async function fetchEmailById(
       format,
     });
 
-    const payload = response.data.payload;
+    const payload = response.data.payload as EmailPayload;
     const parsed = parseEmailPayload(payload, accountId, accountEmail);
 
     return {
@@ -124,10 +125,12 @@ export async function downloadAttachment(
       ? decodeBase64(response.data.data)
       : "";
 
+    const part = response.data as any;
+
     return {
       id: attachmentId,
-      filename: response.data.filename || "attachment",
-      mimeType: response.data.mimeType || "application/octet-stream",
+      filename: part.filename || "attachment",
+      mimeType: part.mimeType || "application/octet-stream",
       size: response.data.size || 0,
       data,
     };

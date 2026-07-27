@@ -1,6 +1,7 @@
 export interface EmailAddress {
   name: string;
   address: string;
+  avatarUrl?: string;
 }
 
 export interface EmailAttachment {
@@ -19,6 +20,11 @@ export interface EmailMessage {
   accountEmail: string;
   labelIds: string[];
   snippet: string;
+  category?: string;
+  categoryGroup?: string;
+  priorityScore?: number;
+  priority_score?: number;
+  aiSummary?: string;
   historyId: string;
   internalDate: string;
   payload?: EmailPayload;
@@ -26,16 +32,16 @@ export interface EmailMessage {
   raw?: string;
 
   // Parsed fields
-  from: EmailAddress;
-  to: EmailAddress[];
+  from?: EmailAddress;
+  to?: EmailAddress[];
   cc?: EmailAddress[];
   bcc?: EmailAddress[];
-  subject: string;
-  date: Date;
+  subject?: string;
+  date?: Date;
   bodyHtml?: string;
   bodyText?: string;
-  attachments: EmailAttachment[];
-  headers: Record<string, string>;
+  attachments?: EmailAttachment[];
+  headers?: Record<string, string>;
 }
 
 export interface EmailPayload {

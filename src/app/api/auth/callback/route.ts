@@ -49,34 +49,11 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // If ID token sign-in didn't work, create user manually
     if (!accessToken) {
-      const { data: existingAuth } = await getSupabaseAdmin().auth.admin.getUserByEmail(profile.email);
-      if (!existingAuth?.user) {
-        await getSupabaseAdmin().auth.admin.createUser({
-          email: profile.email,
-          email_confirm: true,
-          user_metadata: {
-            name: profile.name,
-            avatar_url: profile.picture,
-            provider: "google",
-          },
-        });
-      }
-
-      // Generate a magic link to get a session
-      const { data: linkData } = await getSupabaseAdmin().auth.admin.generateLink({
-        type: "magiclink",
-        email: profile.email,
-      });
-      if (linkData?.properties?.action_link) {
-        return NextResponse.redirect(linkData.properties.action_link);
-      }
+      return NextResponse.redirect(new URL("/login?error=auth_failed", env.APP_URL));
     }
 
-    const supabaseUserId = accessToken
-      ? (await supabase.auth.getUser(accessToken)).data.user?.id
-      : undefined;
+    const supabaseUserId = (await supabase.auth.getUser(accessToken)).data.user?.id;
 
     // Upsert user in our public table
     const { data: existingUser } = await getSupabaseAdmin()

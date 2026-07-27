@@ -73,7 +73,7 @@ export default function SettingsPage() {
             <Button
               variant={permission === "granted" ? "secondary" : "default"}
               size="sm"
-              onClick={requestPermission}
+              onClick={() => requestPermission()}
               disabled={permission === "denied" || permission === "unsupported"}
             >
               {permission === "granted" ? "Active" : "Enable"}
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium">{account.email}</p>
                     <p className="text-xs text-muted-foreground">
-                      {account.is_active ? "Active" : "Inactive"}
+                      {account.isActive ? "Active" : "Inactive"}
                     </p>
                   </div>
                 </div>

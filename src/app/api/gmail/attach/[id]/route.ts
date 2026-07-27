@@ -5,10 +5,10 @@ import { downloadAttachment } from "@/services/gmail";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const emailId = params.id;
+    const { id: emailId } = await params;
     const attachmentId = req.nextUrl.searchParams.get("attachmentId");
 
     if (!attachmentId) {

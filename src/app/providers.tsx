@@ -62,12 +62,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
-        value={{
-          light: "light",
-          dark: "dark",
-          system: theme === "system" ? undefined : theme,
-        }}
+        defaultTheme={theme === "system" ? "system" : theme}
       >
         <SessionHandler>
           <SyncManager>

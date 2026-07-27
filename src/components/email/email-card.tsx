@@ -25,7 +25,7 @@ export function EmailCard({ email, selected, onSelect, onClick, classification }
   const categoryGroup = classification?.categoryGroup || email.categoryGroup;
   const priorityScore = classification?.priorityScore ?? email.priority_score ?? 0;
   const isUnread = email.labelIds?.includes("UNREAD") ?? true;
-  const hasAttachments = email.attachments?.length > 0;
+  const hasAttachments = (email.attachments?.length ?? 0) > 0;
 
   return (
     <motion.div

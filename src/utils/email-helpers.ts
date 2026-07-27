@@ -1,4 +1,4 @@
-import type { EmailMessage, EmailHeader, EmailAttachment, EmailAddress } from "@/types/email";
+import type { EmailMessage, EmailHeader, EmailAttachment, EmailAddress, EmailPayload } from "@/types/email";
 
 export function parseEmailAddress(raw: string): EmailAddress {
   const match = raw.match(/^(?:"?([^"]*)"?\s)?<?([^>]+)>?$/);
@@ -75,7 +75,7 @@ function extractBodyAndAttachments(
 
   if (!payload) return { attachments };
 
-  function walk(part: EmailMessage["payload"]) {
+  function walk(part: EmailPayload) {
     if (part.mimeType === "text/plain" && part.body.data) {
       text = decodeBase64(part.body.data);
     } else if (part.mimeType === "text/html" && part.body.data) {

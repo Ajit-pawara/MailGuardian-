@@ -18,3 +18,4 @@ coverage/
 cypress/
 .vscode/
 *.local
+.vercel

@@ -27,10 +27,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const accountId = body.accountId;
 
-    let result: { synced: number; errors: string[] };
+    let synced = 0;
+    let errors: string[] = [];
 
     if (accountId) {
-      // Verify account belongs to user
       const { data: account } = await getSupabaseAdmin()
         .from("mail_accounts")
         .select("id")
@@ -42,14 +42,18 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Account not found" }, { status: 404 });
       }
 
-      result = await syncAccount(accountId);
+      const r = await syncAccount(accountId);
+      synced = r.synced;
+      errors = r.errors;
     } else {
-      result = await syncAllAccounts();
+      const r = await syncAllAccounts();
+      synced = r.total;
+      errors = r.errors;
     }
 
     return NextResponse.json({
-      synced: result.synced,
-      errors: result.errors,
+      synced,
+      errors,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
