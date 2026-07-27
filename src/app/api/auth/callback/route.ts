@@ -166,24 +166,10 @@ export async function GET(req: NextRequest) {
 
     const redirectUrl = new URL("/", env.APP_URL);
 
-    // Build response with Supabase auth cookies if we have a session
     if (accessToken && refreshToken) {
-      const response = NextResponse.redirect(redirectUrl);
-      response.cookies.set("sb-access-token", accessToken, {
-        path: "/",
-        httpOnly: true,
-        secure: env.APP_URL.startsWith("https"),
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-      response.cookies.set("sb-refresh-token", refreshToken, {
-        path: "/",
-        httpOnly: true,
-        secure: env.APP_URL.startsWith("https"),
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-      return response;
+      redirectUrl.searchParams.set("setup", "true");
+      redirectUrl.searchParams.set("access_token", accessToken);
+      redirectUrl.searchParams.set("refresh_token", refreshToken);
     }
 
     return NextResponse.redirect(redirectUrl);
