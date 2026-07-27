@@ -141,15 +141,18 @@ export async function GET(req: NextRequest) {
       { onConflict: "user_id" }
     );
 
-    const redirectUrl = new URL("/", env.APP_URL);
-
     if (accessToken && refreshToken) {
-      redirectUrl.searchParams.set("setup", "true");
-      redirectUrl.searchParams.set("access_token", accessToken);
-      redirectUrl.searchParams.set("refresh_token", refreshToken);
+      return new NextResponse(
+        `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<script>
+window.location.href = "/#access_token=${accessToken}&refresh_token=${refreshToken}&provider=google&type=recovery";
+</script></head><body></body></html>`,
+        { headers: { "content-type": "text/html" } }
+      );
     }
 
-    return NextResponse.redirect(redirectUrl);
+    return NextResponse.redirect(new URL("/login?error=auth_failed", env.APP_URL));
   } catch (error) {
     console.error("Auth callback error:", error);
     return NextResponse.redirect(new URL("/login?error=auth_failed", env.APP_URL));
