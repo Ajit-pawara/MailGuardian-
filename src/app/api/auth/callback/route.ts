@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { env } from "@/config/env";
 import { getSupabaseAdmin } from "@/services/supabase";
 import { encryptToken } from "@/utils/crypto";
+import { syncAccount } from "@/services/sync";
 
 const oauth2Client = new google.auth.OAuth2(
   env.GOOGLE_CLIENT_ID,
@@ -130,6 +131,9 @@ export async function GET(req: NextRequest) {
           status: "pending",
         },
         { onConflict: "account_id" }
+      );
+      syncAccount(account.id).catch((err) =>
+        console.error("Initial sync error:", err)
       );
     }
 

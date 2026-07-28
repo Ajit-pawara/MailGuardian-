@@ -17,8 +17,10 @@ import {
   endOfMonth,
 } from "date-fns";
 
-export function formatRelativeDate(date: Date | string): string {
+export function formatRelativeDate(date: Date | string | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(d.getTime())) return "";
   if (isToday(d)) return format(d, "h:mm a");
   if (isYesterday(d)) return "Yesterday";
   if (isThisWeek(d)) return format(d, "EEEE");
@@ -26,23 +28,31 @@ export function formatRelativeDate(date: Date | string): string {
   return format(d, "MMM d, yyyy");
 }
 
-export function formatTimeAgo(date: Date | string): string {
+export function formatTimeAgo(date: Date | string | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(d.getTime())) return "";
   return formatDistanceToNow(d, { addSuffix: true });
 }
 
-export function formatFullDate(date: Date | string): string {
+export function formatFullDate(date: Date | string | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(d.getTime())) return "";
   return format(d, "EEEE, MMMM d, yyyy 'at' h:mm a");
 }
 
-export function formatShortDate(date: Date | string): string {
+export function formatShortDate(date: Date | string | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(d.getTime())) return "";
   return format(d, "MMM d, yyyy");
 }
 
-export function formatEmailDate(date: Date | string): string {
+export function formatEmailDate(date: Date | string | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? parseISO(date) : date;
+  if (isNaN(d.getTime())) return "";
   const now = new Date();
   const diffDays = differenceInDays(now, d);
   if (diffDays === 0) return format(d, "h:mm a");
